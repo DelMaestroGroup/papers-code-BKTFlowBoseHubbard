@@ -160,8 +160,7 @@ test_test.jl
 
 # preliminary results
 out/
-/out/*
-*.dat
+/out/* 
 
 # profiling data 
 profile.pb.gz
