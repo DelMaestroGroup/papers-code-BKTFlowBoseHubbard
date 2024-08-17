@@ -39,7 +39,7 @@ The creation of these materials was supported in part by the {INSERT FUNDING AGE
 ### Figures
 
 #### Figure 01: BKT RG flow for Bose-Hubbard model.
-<img src="https://github.com/DelMaestroGroup/papers-code-BKTFlowBoseHubbard/blob/main/figures/001_BKT_RG_flow_Bose-Hubbard.svg" width="400px">
+<img src="https://github.com/DelMaestroGroup/papers-code-BKTFlowBoseHubbard/blob/main/figures/001_BKT_RG_flow_Bose-Hubbard.png" width="400px">
 
 #### Figure 02: Finite size scaling of Luttinger parameter according to BKT flow.
 <img src="https://github.com/DelMaestroGroup/papers-code-BKTFlowBoseHubbard/blob/main/figures/002_finite_size_scaling.svg" width="400px">
