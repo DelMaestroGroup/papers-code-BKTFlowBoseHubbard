@@ -16,8 +16,8 @@ This repository includes links, code, scripts, and data to generate the figures 
 ### Requirements
 The data in this project can be generated using the code in the following repositories:
 
-1. DMRG simulations: BoseHubbardDMRG 
-2. QMC simulations: pigsfli
+1. DMRG simulations: [ExtendedBH_DMRG_Fluctuations_Julia](https://github.com/DelMaestroGroup/ExtendedBH_DMRG_Fluctuations_Julia)
+2. QMC simulations: [pigsfli](https://github.com/DelMaestroGroup/pigsfli)
 
 Data is included in the [data](https://github.com/DelMaestroGroup/papers-code-BKTFlowBoseHubbard/tree/main/data) directory.
 
@@ -39,7 +39,7 @@ The creation of these materials was supported in part by the {INSERT FUNDING AGE
 ### Figures
 
 #### Figure 01: BKT RG flow for Bose-Hubbard model.
-<img src="https://github.com/DelMaestroGroup/papers-code-BKTFlowBoseHubbard/blob/main/figures/001_BKT_RG_flow_Bose-Hubbard.png" width="400px">
+<img src="https://github.com/DelMaestroGroup/papers-code-BKTFlowBoseHubbard/blob/main/figures/001_BKT_RG_flow_Bose-Hubbard.png" width="600px">
 
 #### Figure 02: Finite size scaling of Luttinger parameter according to BKT flow.
 <img src="https://github.com/DelMaestroGroup/papers-code-BKTFlowBoseHubbard/blob/main/figures/002_finite_size_scaling.svg" width="400px">
