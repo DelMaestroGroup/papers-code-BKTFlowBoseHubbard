@@ -37,6 +37,21 @@ function py_fit_lin_err(U, ζs, ζserr)
     Uc, dUc, invUc, dinvUc, α, dα = py"fit_lin_err"(U,ζs,ζserr, (3.3,1.0)) 
 end
 
+function py_fit_lin_err_fss(x, y, yerr)
+    py""" 
+    import numpy as np
+    from scipy.optimize import curve_fit
+    
+    def fit_lin_err_fss(x,y,yerr, p0):  
+        popt,pcov = curve_fit(lambda x, a, y0 : a*x+y0 , x, y, method="lm",maxfev=100000,p0=p0,sigma=yerr,absolute_sigma=True)
+        a, y0 = popt 
+        a_err, y0_err = np.sqrt(np.diag(pcov)) 
+        return a, y0, y0_err
+        """
+
+        a, y0, y0_err = py"fit_lin_err_fss"(x,y,yerr, (0.1,2.0)) 
+end
+
 """Window defining the region of largest ℓ≈L/2 that we fit the linear form to."""
 function window(L)
     i_fit_start(L) = round(Int,L/2) - max(round(Int,L/16),2) 
@@ -44,12 +59,20 @@ function window(L)
 	return i_fit_start(L):i_fit_end(L)
 end
 
-"""Turn ℓ into x=1/(2π^2)log(sin(πℓ/L)) for periodic boundary conditions to perfom linear fits to F(x)."""
+"""Turn ℓ into x=1/(π^2)log(sin(πℓ/L)) for periodic boundary conditions to perfom linear fits to F(x)."""
 function lin_factor_pbc(ls, L::Int)
+    """
+    F_pbc = lin_factor * K + A
+    """
+    return 1/(π^2) * log.(sin.(π*ls/L))
+end
+
+"""Turn ℓ into x=1/(2π^2)log(sin(πℓ/2L)) for periodic boundary conditions to perfom linear fits to F(x)."""
+function lin_factor_obc(ls, L::Int)
     """
     F_obc = lin_factor * K + A
     """
-    return 1/(π^2) * log.(sin.(π*ls/L))
+    return 1/(2π^2) * real.(log.(Complex.(sin.(π*ls/L))))
 end
 
 """Approximate LL form of the fluctuations for ℓ≈L/2 assuming large L."""
@@ -58,7 +81,7 @@ function fluctuations_pbc_large_L_xs(xs, params, p)
     L, = p
 
     return K * xs .+ A 
-end
+end 
 
 """Fit fluctuations to obtain Luttinger parameter and error in K.
 
@@ -78,12 +101,25 @@ function fit_fluc_lin_xs_pbc_err(xs, Fs, L, mask; mask_err = length(xs)÷4:lengt
     K, A = 2.0, 1.0 
     params = (L,)
     (;sol, fit) = curve_fit(fluctuations_pbc_large_L_xs, xs[mask], Fs[mask], MVector{2}([K,A]), params)
-    sol_err, _ = curve_fit(fluctuations_pbc_large_L_xs, xs[mask_err], Fs[mask_err], MVector{2}([K,A]), params)
+    
     K = sol[1]
-    K_min = sol_err[1]
-    K_err = abs(K - K_min)
+
+    K_err = 0.0
+    for i = 2:length(mask_err)-1
+        _mask_err = mask_err[end-i:end]
+        sol_err , _ = curve_fit(fluctuations_pbc_large_L_xs, xs[_mask_err], Fs[_mask_err], MVector{2}([K,A]), params)
+        K_err = max(K_err, abs(K - sol_err[1]))
+    end 
     return sol, K_err, fit
-end
+end 
+
+function fit_fluc_lin_xs_pbc(xs, Fs, L, mask)
+    K, A = 2.0, 1.0 
+    params = (L,)
+    (;sol, fit) = curve_fit(fluctuations_pbc_large_L_xs, xs[mask], Fs[mask], MVector{2}([K,A]), params) 
+    return sol, fit
+end 
+
 
 
 """Fluctuations LL L->∞ form for use with infinite VUMPS results."""

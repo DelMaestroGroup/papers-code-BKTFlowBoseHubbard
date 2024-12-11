@@ -241,6 +241,20 @@ function draw_open_lattice!(p; n=13, l = 10.0, kwargs...)
     annotate!(p,x[5],y-.006, Plots.text("➤", 7, :vcenter, :left, color, rotation = 180 ))
 end
 
+function draw_open_lattice_horizontal!(p; n=13, l = 10.0, kwargs...)
+    y = 0:l/n:l 
+    x = -0.2
+     
+    plot!(repeat([0],length(y)),y; ls=:dash, lw=1, color=:black)
+    scatter!(repeat([0],length(y)),y;marker=:circle, kwargs...)
+    scatter!(repeat([0],length(y[1:6])), y[1:6];marker=:circle , mswidth  =1, nice_points(get_colors()[end-5])...)
+
+    plot!(p,[x,x],[y[1]-0.1,y[6]+0.1];  color=:black, lw=1  )
+    annotate!(p,-0.4,(y[1]+y[6])/2,text(L"\ell",11,:black))
+    annotate!(p,x-.01,y[6], Plots.text("➤", 7, :vcenter, :left, color, rotation = 90 ))
+    annotate!(p,x+.01,y[1], Plots.text("➤", 7, :vcenter, :left, color, rotation = -90 ))
+end
+
 function plot_K_supplement!(p,  Us, color_lookup; load_fun=load_dmrg_pbc,L_lookup=get_values_of_L, window_fun=window, mask_err = xs -> length(xs)÷4:length(xs))
     for U in Us  
         Ls = L_lookup(U)
@@ -260,7 +274,7 @@ function plot_K_supplement!(p,  Us, color_lookup; load_fun=load_dmrg_pbc,L_looku
     end
 end
 
-function plot_fluctuations_supplement!(p, Us, L, color_lookup; load_fun=load_dmrg_pbc, first_fit_value=96÷16, legend=true, window_fun=window, first_point=1)
+function plot_fluctuations_supplement!(p, Us, L, color_lookup; load_fun=load_dmrg_pbc, first_fit_value=96÷16, legend=true, window_fun=window, first_point=1,mask_err=xs->length(xs)÷4:length(xs))
     for (i_c,U) in enumerate(Us)
         c = color_lookup[U] 
 		ls, Fs = load_fun(L,U);
@@ -270,8 +284,10 @@ function plot_fluctuations_supplement!(p, Us, L, color_lookup; load_fun=load_dmr
 		 
 		scatter!(p, xs[first_point:end],Fs[first_point:end]; marker=:circle, msw=1, ms=5, label=latexstring(f"\\ U={U:3.3f}"), nice_points(c)...)
 		 
-		plot!(p, xs[first_fit_value:end], fluctuations_pbc_large_L_xs(xs[first_fit_value:end], (Kfit, afit), (L,)),color=:black,ls=:dash,label=nothing)    
-		plot!(p, xs[idx], fluctuations_pbc_large_L_xs(xs[idx], (Kfit, afit), (L,)),color=:black,label=nothing)   
+        plot!(p, xs[1:mask_err(xs)[1]], fluctuations_pbc_large_L_xs(xs[1:mask_err(xs)[1]], (Kfit, afit), (L,)),color=:black,linewidth=0.5,ls=:dash,label=nothing) 
+        plot!(p, xs[mask_err(xs)[end]:end], fluctuations_pbc_large_L_xs(xs[mask_err(xs)[end]:end], (Kfit, afit), (L,)),color=:black,linewidth=0.5,ls=:dash,label=nothing) 
+		plot!(p, xs[mask_err(xs)], fluctuations_pbc_large_L_xs(xs[mask_err(xs)], (Kfit, afit), (L,)),color=:black,linewidth=1,ls=:dash,label=nothing)    
+		plot!(p, xs[idx], fluctuations_pbc_large_L_xs(xs[idx], (Kfit, afit), (L,)),color=:black,linewidth=2,label=nothing)   
 
 		# legend:
         if legend
@@ -279,4 +295,111 @@ function plot_fluctuations_supplement!(p, Us, L, color_lookup; load_fun=load_dmr
             annotate!(-0.07,0.9-0.05*(i_c-1),text(latexstring(f"\\ \\ \\ U={U:3.3f}"),:left,10))
         end
     end
+end
+
+function plot_fitting_method_literature!(p, U, L; colors = get_colors())
+    _, Fs = load_dmrg_obc_literature_comparison(L,U)
+    ls = 1:L
+    Fs = L%2==0 ? [Fs;reverse(Fs)[2:end]] : [Fs;reverse(Fs)]
+    xs = lin_factor_obc(ls,L)
+
+    W =L÷8:L
+
+    # fit left window r=4
+    K_left4 = zeros(length(W))
+    for (i,w) in enumerate(W) 
+        if 4+w > L-1
+            continue
+        end
+        window = 4:min(4+w,L-1) 
+        sol,_ = fit_fluc_lin_xs_pbc(xs, Fs, L, window) 
+        K_left4[i] = sol[1]
+    end
+    # fit left window r=16 
+    K_left16 = zeros(length(W))
+    for (i,w) in enumerate(W) 
+        if 16+w > L-1
+            continue
+        end
+        window = 16:min(16+w,L-1)
+        sol,_ = fit_fluc_lin_xs_pbc(xs, Fs, L, window) 
+        K_left16[i] = sol[1]
+    end
+    # fit center window 
+    K_center = zeros(length(W))
+    for (i,w) in enumerate(W) 
+        if (L÷2-ceil(Int,w/2)) < 1 || (L÷2+floor(Int,w/2)) > L-1
+            continue
+        end
+        window = max(1,(L÷2-ceil(Int,w/2))):min(L-1,(L÷2+floor(Int,w/2))) 
+        sol,_ = fit_fluc_lin_xs_pbc(xs, Fs, L, window) 
+        K_center[i] = sol[1]
+    end
+
+    K_fit = (K_center[1] + K_left4[1])/2
+    K_err = abs(K_center[1] - K_left4[1])/2
+
+    step = 2
+    
+    plot!(p,[0,L],[K_fit,K_fit], ribbon=K_err , color=:lightgray) 
+
+    scatter!(p,(L ./ W)[1:step:end], K_center[1:step:end];m=:circle,nice_points(colors[1])...)
+    scatter!(p,(L ./ W)[1:step:end], K_left16[1:step:end];m=:diamond,nice_points(colors[2])...)
+    scatter!(p,(L ./ W)[1:step:end], K_left4[1:step:end];m=:square,nice_points(colors[3])...)
+
+
+    plot!(p,[0,L/W[1]],[K_fit,K_fit];ls=:dash,color=:black)#,legend=:bottomleft,legendfontsize=9,label=nothing,foreground_color_legend = nothing,background_color_legend=nothing)
+
+    return K_fit, K_err
+end
+
+function plot_fss_method_literature!(p, U, Ls_lit, Ls_more; colors = get_colors())
+    Ls = [Ls_lit;Ls_more]
+    iend_lit = length(Ls_lit)
+
+    Ks = zeros(Float64,length(Ls))
+    Ks_err = zeros(Float64,length(Ls))
+    for (i,L) in enumerate(Ls)
+        nmax = 6
+        _, Fs = load_dmrg_obc_literature_comparison(L,U;nmax)
+        ls = 1:L
+        Fs = L%2==0 ? [Fs;reverse(Fs)[2:end]] : [Fs;reverse(Fs)]
+        xs = lin_factor_obc(ls,L)
+
+        w =L÷8 
+
+        # fit left window r=4  
+        window = 4:min(4+w,L-1) 
+        sol,_ = fit_fluc_lin_xs_pbc(xs, Fs, L, window) 
+        K_left4 = sol[1] 
+        # fit left window r=16  
+        window = 16:min(16+w,L-1)
+        sol,_ = fit_fluc_lin_xs_pbc(xs, Fs, L, window) 
+        K_left16 = sol[1] 
+        # fit center window  
+        window = max(1,(L÷2-ceil(Int,w/2))):min(L-1,(L÷2+floor(Int,w/2))) 
+        sol,_ = fit_fluc_lin_xs_pbc(xs, Fs, L, window) 
+        K_center = sol[1] 
+
+        K_fit = (K_center + K_left4)/2
+        K_err = abs(K_center - K_left4)/2
+
+        Ks[i] = K_fit
+        Ks_err[i] = K_err
+    end
+
+    a, Kinf, Kinf_err = py_fit_lin_err_fss(1.0./log.(Ls[1:iend_lit]), Ks[1:iend_lit], Ks_err[1:iend_lit])
+    
+    xs = 0.0:0.0001:maximum(1.0./log.(Ls[1:iend_lit])) 
+
+    #scatter!(p,1.0./log.(Ls[iend_lit+1:end]), Ks[iend_lit+1:end], yerr=Ks_err[iend_lit+1:end];marker=:circle, msw=1, ms=5, nice_points(colors[1])...)
+    scatter!(p,1.0./log.(Ls[iend_lit+1:end]), Ks[iend_lit+1:end];marker=:diamond, msw=1, ms=5, nice_points(colors[1])...)
+ 
+    plot!(p, xs, a*xs .+ Kinf; ls=:dash, color=:black)
+
+    scatter!(p,1.0./log.(Ls[1:iend_lit]), Ks[1:iend_lit], yerr=Ks_err[1:iend_lit];marker=:circle, msw=1, ms=5, nice_points(colors[2])...)
+
+    scatter!(p,[0.0], [Kinf], yerr=[Kinf_err];marker=:circle, msw=1, ms=5, nice_points("#000000")...)
+    
+    println("Esimated K:" , Kinf, " ± ", Kinf_err)
 end

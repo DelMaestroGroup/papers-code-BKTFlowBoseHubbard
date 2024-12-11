@@ -1,7 +1,7 @@
 [![Paper](https://img.shields.io/badge/paper-arXiv%3AXXXX.YYYYY-B31B1B.svg)](https://arxiv.org/abs/XXXX.YYYYY)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://zenodo.org/badge/latestdoi/XXXXYYYYY)
 
-# Paper Title
+# Direct Observation of the Berezinskii-Kosterlitz-Thouless Renormalization Group Flow at a Quantum Phase Transition
 
 Author 1, Author 2, Author 3
 

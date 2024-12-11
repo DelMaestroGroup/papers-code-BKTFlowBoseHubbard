@@ -161,6 +161,12 @@ function load_dmrg_obc(L::Int,U::Float64;nmax::Int=6,path::String="../data/obc/D
     Fs =  load_txt(filepath)[2:end]
     return ls, Fs
 end
+function load_dmrg_obc_literature_comparison(L::Int,U::Float64;nmax::Int=4,path::String="../data/obc/DMRG_reproduce_literature")
+    ls = collect(1.0:L//2)  
+    filepath = joinpath(path, @sprintf "sigma2_L%02d_N%02d_nmax%02d_t+1.000_V+0.000_Vp+0.000_Usta%+4.3f_Uend%+4.3f_Unum0001_obc.dat" L L nmax U U) 
+    Fs =  load_txt(filepath)[2:end]
+    return ls, Fs
+end
 function get_values_of_L_obc(path::String,U::Float64;Lmin::Int=0)  
     files = [x for x in readdir(path) if isfile(joinpath(path,x))]
     Ls = Int[]
