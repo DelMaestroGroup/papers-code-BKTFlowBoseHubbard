@@ -206,12 +206,14 @@ function parametrice_cicle(n, r, θ_range = (0,2π))
     return x, y
 end
 function plot_circle!(p, n; r=1.0, kwargs...)   
+    highlight_color = "#FF6961"
+
     x,y = parametrice_cicle(1000, r)
     plot!(p,(x .-r/2)./2,y; ls=:dash, lw=1, color=:black)
     x,y = parametrice_cicle(n, r)
     scatter!(p,(x .-r/2)./2, y;marker=:circle, kwargs...)
 
-    scatter!(p,(x[1:4] .-r/2)./2, y[1:4];marker=:circle, mswidth  =1, nice_points(get_colors()[end-5])...)
+    scatter!(p,(x[1:4] .-r/2)./2, y[1:4];marker=:circle, mswidth  =1, nice_points(highlight_color)...)
 
     annotate!(p,-0.2,1.35, Plots.text("➤", 7, :vcenter, :left, color, rotation = 180 ))
     annotate!(p,0.355,0.15, Plots.text("➤", 7, :vcenter, :left, color, rotation = -90 ))
@@ -228,11 +230,13 @@ function draw_periodic_lattice!(p; n=13, r=1.0, m=3, kwargs...)
 end 
 
 function draw_open_lattice!(p; n=13, l = 10.0, kwargs...)
+    highlight_color = "#FF6961"
+
     x = 0:l/n:l
      
     plot!(x,repeat([0],length(x)); ls=:dash, lw=1, color=:black)
     scatter!(x,repeat([0],length(x));marker=:circle, kwargs...)
-    scatter!(x[5:10],repeat([0],length(x[5:10]));marker=:circle , mswidth  =1, nice_points(get_colors()[end-5])...)
+    scatter!(x[5:10],repeat([0],length(x[5:10]));marker=:circle , mswidth  =1, nice_points(highlight_color)...)
 
     y = 0.2
     plot!(p,[l/2-2.1,l/2+2.1],[y,y];  color=:black, lw=1  )
@@ -242,12 +246,14 @@ function draw_open_lattice!(p; n=13, l = 10.0, kwargs...)
 end
 
 function draw_open_lattice_horizontal!(p; n=13, l = 10.0, kwargs...)
+    highlight_color = "#FF6961"
+
     y = 0:l/n:l 
     x = -0.2
      
     plot!(repeat([0],length(y)),y; ls=:dash, lw=1, color=:black)
     scatter!(repeat([0],length(y)),y;marker=:circle, kwargs...)
-    scatter!(repeat([0],length(y[1:6])), y[1:6];marker=:circle , mswidth  =1, nice_points(get_colors()[end-5])...)
+    scatter!(repeat([0],length(y[1:6])), y[1:6];marker=:circle , mswidth  =1, nice_points(highlight_color)...)
 
     plot!(p,[x,x],[y[1]-0.1,y[6]+0.1];  color=:black, lw=1  )
     annotate!(p,-0.4,(y[1]+y[6])/2,text(L"\ell",11,:black))

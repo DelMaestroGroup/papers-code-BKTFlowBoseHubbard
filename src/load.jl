@@ -30,8 +30,13 @@ Returns:
 """
 function load_dmrg_pbc(L::Int,U::Float64;nmax::Int=6,path::String="../data/pbc/DMRG")
     ls = collect(1.0:L//2)  
-    filepath = joinpath(path, @sprintf "sigma2_L%02d_N%02d_nmax%02d_t+1.000_V+0.000_Vp+0.000_Usta%+4.3f_Uend%+4.3f_Unum0001.dat" L L nmax U U)
-    Fs =  load_txt(filepath)[2:end]
+    Fs = try 
+        filepath = joinpath(path, @sprintf "sigma2_L%02d_N%02d_nmax%02d_t+1.000_V+0.000_Vp+0.000_Usta%+4.3f_Uend%+4.3f_Unum0001.dat" L L nmax U U)
+        Fs =  load_txt(filepath)[2:end]
+    catch 
+        filepath = joinpath(path, @sprintf "sigma2_L%02d_N%02d_nmax%02d_t+1.000_V+0.000_Vp+0.000_Usta%+4.5f_Uend%+4.5f_Unum0001.dat" L L nmax U U)
+        Fs =  load_txt(filepath)[2:end]
+    end
     return ls, Fs
 end
 

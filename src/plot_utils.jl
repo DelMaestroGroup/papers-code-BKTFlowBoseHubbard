@@ -76,7 +76,8 @@ function get_colors()
     "#B39EB5",  # Pastel Purple
     "#C4C3E9",  # Pastel Lavender
     "#AEC6CF",  # Pastel Teal 
-    "#89CFF0",  # Pastel Cyan
+    "#89CFF0",  # Pastel Cyan   
+    "#80B7DE",  # Pastel Sky Blue
     "#779ECB",  # Pastel Blue  
     "#FF6961",  # Pastel Red
     "#FF9AA2",  # Pastel Coral
@@ -88,7 +89,7 @@ function get_colors()
     "#B2B982",  # Pastel Olive
     "#77DD77",  # Pastel Green
     "#DA70D6",  # Pastel Orchid 
-    "#FFB6C1",   # Pastel Light Pink 
+    "#FFB6C1",   # Pastel Light Pink  
 ]
  
     cols = reverse(cols)
