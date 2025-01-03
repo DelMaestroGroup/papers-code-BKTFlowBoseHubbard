@@ -58,8 +58,8 @@ function plot_dmrg_rg_flow!(p, color_lookup::Dict{Float64,String}, ms_lookup::Di
                     #end
                 end   
                 if U > 3.285 || U < 3.265
-                    add_arrow!(p,Ks[(Ks.>=2)], Vs[(Ks.>=2)], 0.35,col) 
-                    add_arrow!(p,Ks[(Ks.>=2)], Vs[(Ks.>=2)], 0.28,col)
+                    add_arrow!(p,Ks[(Ks.>=2)], Vs[(Ks.>=2)], 0.35*2/(4pi) ,col) 
+                    add_arrow!(p,Ks[(Ks.>=2)], Vs[(Ks.>=2)], 0.28*2/(4pi) ,col)
                 end
                 # for the largest L pair also draw point K2, V2
                 scatter!(p, [K2],[V2], xerr=[K2_err]  ;msc=col,lc=col,nice_points(col)...,lw=0.5,label=nothing, marker=:c,ms=2 )
@@ -101,14 +101,14 @@ function add_arrow!(p,x,y,y0,color; debug_print=false)
     dx = x_2 - x_1
     dy = y_2 - y_1 
     # Compute the angle in radians
-    angle_rad = atan(dy, dx) 
+    angle_rad = atan(dy*(4pi)/2, dx) 
     # Convert the angle to degrees 
     angle_deg = angle_rad * (180 / π)  
     debug_print && println(angle_deg)
     if angle_deg < 0
-        angle_deg += 15
+        angle_deg += 15 
     else
-        angle_deg -= 10
+        angle_deg -= 10 
     end
     # Plot the arrow
     annotate!(p,x_2,y_2, Plots.text("➤", 5, :vcenter, :left, color, rotation = angle_deg ))

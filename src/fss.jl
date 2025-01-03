@@ -11,7 +11,7 @@ function fss_superfluid(Ls, (L_points, K_points))
         p[1] + p[2]*(1/L)^(2*(p[1]-2))
     end 
     (;sol, fit) = curve_fit(scaling_law, L_points, K_points, MVector{2}([2.5,0.5]), ())
-    println(sol)
+    #println(sol)
     return [scaling_law(L, sol,()) for L in Ls]
 end
 
@@ -22,6 +22,6 @@ function fss_mott_insulator(Ls, (L_points, K_points))
         1 + p[1]*(1/L)^(2*(4-4*p[2]))
     end 
     (;sol, fit) = curve_fit(scaling_law, L_points, K_points, MVector{2}([0.5,0.99]), ())
-    println(sol)
+    #println(sol)
     return [scaling_law(L, sol,()) for L in Ls]
 end

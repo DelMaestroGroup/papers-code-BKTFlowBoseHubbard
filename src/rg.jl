@@ -112,8 +112,9 @@ end
 
 """From a value of ζ, return a grid of K points with spacing dk and the corresponding V values according to the RG flow."""
 function get_flow_curve(ξ::Float64 ; dk::Float64=0.001)
-    K_array = collect(4.0:-dk:0.0)  
-    ys = sqrt.(0.0im .+ 16.0 ./ K_array .+ 8*log.(K_array/2.0 .+ 0.0im) .- 8*ξ) 
+    K_array = collect(4.0:-dk:0.0) 
+    # v/Er on y-axis 
+    ys = sqrt(2)/π * sqrt.(0.0im .+ 2.0 ./ K_array .+  log.(K_array/2.0 .+ 0.0im) .-  ξ) 
     return K_array, real.(ys)   
 end
  
