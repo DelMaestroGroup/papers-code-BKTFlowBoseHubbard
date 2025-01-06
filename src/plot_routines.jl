@@ -199,6 +199,52 @@ function plot_qmc_rg_flow!(p, color_lookup::Dict{Float64,String}, ms_lookup::Dic
 	end	
 end
 
+function plot_obc_rg_flow!(p, color_lookup::Dict{Float64,String}, ms_lookup::Dict{Int,Real} ) 
+    factor = 4.1
+    window_fun_obc = L-> round(Int,L/(2*factor)-L/16):round(Int,L/(2*factor)) 
+    error_fun_obc = (xs)->round(Int,2length(xs)÷(8*factor)):round(Int,2length(xs)÷(2factor))
+
+    U_obc = get_values_of_U_obc(;path="../data/obc/DMRG") 
+    println(U_obc)  
+    for U in U_obc
+        col = color_lookup[U] 
+
+        L_array = get_values_of_L_obc("../data/obc/DMRG",U;Lmin=300)[1:2:end]  
+        Ks_lin_RG = zeros(Float64,length(L_array)) 
+		Kerr_lin_RG = zeros(Float64,length(L_array))
+ 
+        for (i,L) in enumerate(L_array) 
+			ls, Fs = load_dmrg_obc(L,U);
+			xs = lin_factor_pbc(ls, L);  
+            
+            idx = window_fun_obc(L)
+               
+			(Ks_lin_RG[i], _), Kerr_lin_RG[i] ,  _ = fit_fluc_lin_xs_pbc_err(xs, Fs, L, idx, mask_err=error_fun_obc(xs))   
+		end  
+        # form the pairs from consecutive L values to solve for ζ for each pair
+        stride = 2
+        L_pairs = [(L_array[i],L_array[i+stride]) for i in 1:length(L_array)-stride]
+        K_pairs = [(Ks_lin_RG[i],Ks_lin_RG[i+stride]) for i in 1:length(Ks_lin_RG)-stride]
+        K_err_pairs = [(Kerr_lin_RG[i],Kerr_lin_RG[i+stride]) for i in 1:length(Kerr_lin_RG)-stride] 
+                
+        for (i, ((L1, L2), (K1,K2), (K1_err,K2_err))) in enumerate(zip(reverse(L_pairs),reverse(K_pairs),reverse(K_err_pairs))) 
+            ζ = get_zeta_from_Ks(L1,L2,K1,K2)  
+            Ks, Vs = get_flow_curve(ζ; dk=0.00001)
+
+            V1 = Vs[argmin(abs.(Ks.-K1))] 
+            V2 = Vs[argmin(abs.(Ks.-K2))] 
+            
+            
+            scatter!(p,[K1],[V1], xerr=[K1_err] ;msc=col,lc=col,markercolor=col,lw=0.5,label=nothing, marker=:square,ms=1 )
+            scatter!(p,[K1],[V1],  ;msc=col,lc=col,markercolor=col,lw=1,label=nothing, marker=:square,markersize=2 ,nice_points(col)... )
+            if i == 1 
+                scatter!(p,[K2],[V2], xerr=[K2_err] ;msc=col,lc=col,markercolor=col,lw=0.5,label=nothing, marker=:square,ms=1 )
+                scatter!(p,[K2],[V2],  ;msc=col,lc=col,markercolor=col,lw=1,label=nothing, marker=:square,markersize=2 ,nice_points(col)...)
+            end
+        end
+    end
+end
+
 function parametrice_cicle(n, r, θ_range = (0,2π))
     θ = range(θ_range..., length=n+1)[1:end-1]  
     x = r * cos.(θ)   
@@ -297,22 +343,25 @@ function plot_fluctuations_supplement!(p, Us, L, color_lookup; load_fun=load_dmr
 
 		# legend:
         if legend
-            scatter!(p,[-0.07],[0.9-0.05*(i_c-1)];ms=5,nice_points(c)...)
-            annotate!(-0.07,0.9-0.05*(i_c-1),text(latexstring(f"\\ \\ \\ U={U:3.3f}"),:left,10))
+            scatter!(p,[-0.04],[0.9-0.05*(i_c-1)];ms=5,nice_points(c)...)
+            annotate!(-0.04,0.9-0.05*(i_c-1),text(latexstring(f"$\\ \\ \\ {U:3.3f}$"),:left,10))
         end
     end
+    legend && annotate!(-0.027,0.9+0.05 ,text(latexstring(f"$U/J$"),:left,10))
 end
 
 function plot_fitting_method_literature!(p, U, L; colors = get_colors())
     _, Fs = load_dmrg_obc_literature_comparison(L,U)
     ls = 1:L
     Fs = L%2==0 ? [Fs;reverse(Fs)[2:end]] : [Fs;reverse(Fs)]
-    xs = lin_factor_obc(ls,L)
+    xs = lin_factor_obc(ls,L) 
 
     W =L÷8:L
+    
 
     # fit left window r=4
     K_left4 = zeros(length(W))
+    a_left4 = zeros(length(W))
     for (i,w) in enumerate(W) 
         if 4+w > L-1
             continue
@@ -320,9 +369,11 @@ function plot_fitting_method_literature!(p, U, L; colors = get_colors())
         window = 4:min(4+w,L-1) 
         sol,_ = fit_fluc_lin_xs_pbc(xs, Fs, L, window) 
         K_left4[i] = sol[1]
+        a_left4[i] = sol[2]
     end
     # fit left window r=16 
     K_left16 = zeros(length(W))
+    a_left16 = zeros(length(W))
     for (i,w) in enumerate(W) 
         if 16+w > L-1
             continue
@@ -330,20 +381,25 @@ function plot_fitting_method_literature!(p, U, L; colors = get_colors())
         window = 16:min(16+w,L-1)
         sol,_ = fit_fluc_lin_xs_pbc(xs, Fs, L, window) 
         K_left16[i] = sol[1]
+        a_left16[i] = sol[2]
     end
     # fit center window 
     K_center = zeros(length(W))
+    a_center = zeros(length(W))
     for (i,w) in enumerate(W) 
-        if (L÷2-ceil(Int,w/2)) < 1 || (L÷2+floor(Int,w/2)) > L-1
+        if  (L÷2-ceil(Int,w/2)) < 1 || (L÷2+floor(Int,w/2)) > L-1
             continue
         end
         window = max(1,(L÷2-ceil(Int,w/2))):min(L-1,(L÷2+floor(Int,w/2))) 
         sol,_ = fit_fluc_lin_xs_pbc(xs, Fs, L, window) 
         K_center[i] = sol[1]
+        a_center[i] = sol[2]
     end
 
     K_fit = (K_center[1] + K_left4[1])/2
     K_err = abs(K_center[1] - K_left4[1])/2
+
+    a_fit = (a_center[1] + a_left4[1])/2
 
     step = 2
     
@@ -356,7 +412,7 @@ function plot_fitting_method_literature!(p, U, L; colors = get_colors())
 
     plot!(p,[0,L/W[1]],[K_fit,K_fit];ls=:dash,color=:black)#,legend=:bottomleft,legendfontsize=9,label=nothing,foreground_color_legend = nothing,background_color_legend=nothing)
 
-    return K_fit, K_err
+    return K_fit, K_err, a_fit
 end
 
 function plot_fss_method_literature!(p, U, Ls_lit, Ls_more; colors = get_colors())

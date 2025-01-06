@@ -157,6 +157,20 @@ function get_values_of_U_qmc(;path::String="../data/pbc/QMC/")
     return Us
 end 
 
+function get_values_of_U_obc(;path::String="../data/obc/DMRG/")  
+    files = [x for x in readdir(path) if isfile(joinpath(path,x))] 
+    Us = Float64[] 
+    for file in files  
+        flush(stdout)
+        U = parse(Float64, split(file,"_")[9][5:end])  
+        if !(U in Us)
+            push!(Us,U)     
+        end
+    end
+    sort!(Us)
+    return Us
+end 
+
 
 
 # Supplemental Material 
