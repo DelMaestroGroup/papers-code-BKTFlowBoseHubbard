@@ -465,3 +465,104 @@ function plot_fss_method_literature!(p, U, Ls_lit, Ls_more; colors = get_colors(
     
     println("Esimated K:" , Kinf, " ± ", Kinf_err)
 end
+
+
+function plot_fig3_Fandfit_obc!(p_F, fit_window_obc, err_window_obc) 
+    local Us = [ 3.275 ]    
+    local col_lookup = get_color_lookup(get_values_of_U(;path="../data/pbc/DMRG/")) 
+    local cols = [col_lookup[U] for U in Us]
+    
+    for (U, (i_c,c)) in zip(Us,enumerate(cols))   
+        # OBC   
+        local L = 460
+        local ls, Fs = load_dmrg_obc(L,U);
+        local xs = lin_factor_pbc(ls, L);  
+        local idx = fit_window_obc(L)
+        local (Kfit, afit), Kerr ,  _ = fit_fluc_lin_xs_pbc_err(xs, Fs, L, idx, mask_err=err_window_obc(xs))   
+            
+        scatter!(p_F, xs,Fs; marker=:circle, msw=2, ms=4, label=latexstring(f"\\ {U:3.3f}"), nice_points(c)...)
+            
+        plot!(p_F, xs[err_window_obc(xs)], fluctuations_pbc_large_L_xs(xs[err_window_obc(xs)], (Kfit, afit), (L,)),color=:black,ls=:dash,label=nothing)   
+        plot!(p_F, xs[1:end], fluctuations_pbc_large_L_xs(xs[1:end], (Kfit, afit), (L,)),color=:black,ls=:dot,label=nothing)    
+        plot!(p_F, xs[idx], fluctuations_pbc_large_L_xs(xs[idx], (Kfit, afit), (L,)),color=:black,label=nothing,linewidth=2)    
+ 
+    end   
+    p_F 
+end
+
+function plot_fig2_Kobc!(p,  fit_window_obc, err_window_obc; legend=true)
+    local Us = [3.2,3.275,3.3]  
+	local Ls_pbc = [16,32,48,64,96,128]
+    local Ls_obc = [200,256,330,460,512]  
+	local col_lookup = get_color_lookup(get_values_of_U(;path="../data/pbc/DMRG/"))
+	local cols = [col_lookup[U] for U in Us]
+  
+    # labels
+    annotate!(p,0.172+0.003,2.25, text(latexstring("\\mathrm{OBC}"),:center,9))
+    annotate!(p,0.2305+0.04,2.25, text(latexstring("\\mathrm{PBC}"),:center,9,:gray))
+    
+    if legend
+        local dy=0.02
+        local y_top = 2.07
+        local x_right = 0.28
+        
+        annotate!(p,x_right,y_top-0dy,text(latexstring(f"$U/J$"),9,:left )) 
+        plot!(p,[x_right-0.03,x_right-0.005], [y_top-1dy,y_top-1dy];color= cols[1])
+        annotate!(p,x_right,y_top-1dy,text(latexstring(f"${Us[1]:2.1f}$"),9,:left )) 
+        plot!(p,[x_right-0.03,x_right-0.005], [y_top-2dy,y_top-2dy];color= cols[2])
+        annotate!(p,x_right,y_top-2dy,text(latexstring(f"${Us[2]:2.3f}$"),9,:left ))   
+        plot!(p,[x_right-0.03,x_right-0.005], [y_top-3dy,y_top-3dy];color= cols[3])
+        annotate!(p,x_right,y_top-3dy,text(latexstring(f"${Us[3]:2.1f}$"),9,:left ))
+    end
+	# x-axis transformation: plot 1/log(L)
+	x_trafo = (x) -> 1.0 ./ log.(x)
+
+	for (U, (i_c,c)) in zip(Us,enumerate(cols))
+        #PBC
+        _c_pbc = "#696969"  
+        
+		local Ks_lin = zeros(Float64,length(Ls_pbc))
+		local Ks_lin_err = zeros(Float64,length(Ls_pbc))
+		local as_lin = zeros(Float64,length(Ls_pbc))
+		for (i,L) in enumerate(Ls_pbc)
+		    local ls, Fs = load_dmrg_pbc(L,U) 
+		    local xs = lin_factor_pbc(ls,L)
+		    local idx = window(L) 
+			(Ks_lin[i], as_lin[i]), Ks_lin_err[i], _ = fit_fluc_lin_xs_pbc_err(xs,Fs,L,idx) 
+        end    
+        local Ls_fit = [5:1:1000;2000;5000;10000; 100000; 1000000;10000000;100000000;1000000000;10000000000;100000000000;100000000000;Inf]
+        if i_c == 2 
+            # ~sepraratrix 
+            local Ks = fss_separatrix(Ls_fit, (Ls_pbc[end],Ks_lin[end])) 
+            plot!(p, x_trafo(Ls_fit),Ks; linestyle=:dash, color=_c_pbc)
+        elseif i_c == 1
+            # superfluid  
+            local Ks = fss_superfluid(Ls_fit, (Ls_pbc[end-1:end], Ks_lin[end-1:end]))
+            plot!(p, x_trafo(Ls_fit),Ks; linestyle=:dash, color=_c_pbc)
+        elseif i_c == 3	
+            # mott insulator  
+            local Ks = fss_mott_insulator(Ls_fit, (Ls_pbc[end-1:end], Ks_lin[end-1:end]))
+            plot!(p, x_trafo(Ls_fit),Ks; linestyle=:dash, color=_c_pbc)
+        end 
+        
+
+        scatter!(p, x_trafo(Ls_pbc), Ks_lin,yerr=Ks_lin_err; marker=:circle, msw=0.6, ms=4, nice_points(_c_pbc)...)
+        scatter!(p, x_trafo(Ls_pbc), Ks_lin ; marker=:circle, msw=2, ms=5, nice_points(_c_pbc)...)
+
+        # OBC 
+        local Ks_lin = zeros(Float64,length(Ls_obc))
+        local Ks_lin_err = zeros(Float64,length(Ls_obc))
+        local as_lin = zeros(Float64,length(Ls_obc)) 
+            
+        for (i,L) in enumerate(Ls_obc) 
+            local ls, Fs = load_dmrg_obc(L,U) 
+            local xs = lin_factor_pbc(ls,L)
+            local idx = fit_window_obc(L)
+            (Ks_lin[i], as_lin[i]), Ks_lin_err[i], _ = fit_fluc_lin_xs_pbc_err(xs,Fs,L,idx, mask_err=err_window_obc(xs)) 
+        end  
+        scatter!(p, x_trafo(Ls_obc), Ks_lin,yerr=Ks_lin_err; marker=:circle, msw=0.6, ms=4, m=:square, nice_points(c)...) 
+        scatter!(p, x_trafo(Ls_obc), Ks_lin; marker=:circle, msw=2, ms=4, m=:square, nice_points(c)...)
+
+    end
+    p
+end
