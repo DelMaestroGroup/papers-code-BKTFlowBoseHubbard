@@ -307,7 +307,7 @@ function draw_open_lattice_horizontal!(p; n=13, l = 10.0, kwargs...)
     annotate!(p,x+.01,y[1], Plots.text("➤", 7, :vcenter, :left, color, rotation = -90 ))
 end
 
-function plot_K_supplement!(p,  Us, color_lookup; load_fun=load_dmrg_pbc,L_lookup=get_values_of_L, window_fun=window, mask_err = xs -> length(xs)÷4:length(xs))
+function plot_K_supplement!(p,  Us, color_lookup; load_fun=load_dmrg_pbc,L_lookup=get_values_of_L, window_fun=window, mask_err = xs -> length(xs)÷4:length(xs),marker=:circle,ms=5)
     for U in Us  
         Ls = L_lookup(U)
         c = color_lookup[U]
@@ -322,11 +322,11 @@ function plot_K_supplement!(p,  Us, color_lookup; load_fun=load_dmrg_pbc,L_looku
             (Ks_lin[i], as_lin[i]), Ks_lin_err[i], _ = fit_fluc_lin_xs_pbc_err(xs,Fs,L,idx,mask_err=mask_err(xs)) 
         end    
         
-        scatter!(p, x_trafo(Ls), Ks_lin,yerr=Ks_lin_err; marker=:circle, msw=1, ms=5, nice_points(c)...) 
+        scatter!(p, x_trafo(Ls), Ks_lin,yerr=Ks_lin_err; marker=marker, msw=1, ms=ms, nice_points(c)...) 
     end
 end
 
-function plot_fluctuations_supplement!(p, Us, L, color_lookup; load_fun=load_dmrg_pbc, first_fit_value=96÷16, legend=true, window_fun=window, first_point=1,mask_err=xs->length(xs)÷4:length(xs))
+function plot_fluctuations_supplement!(p, Us, L, color_lookup; load_fun=load_dmrg_pbc, first_fit_value=96÷16, legend=true, window_fun=window, first_point=1,mask_err=xs->length(xs)÷4:length(xs),marker=:circle,ms=5)
     for (i_c,U) in enumerate(Us)
         c = color_lookup[U] 
 		ls, Fs = load_fun(L,U);
@@ -334,7 +334,7 @@ function plot_fluctuations_supplement!(p, Us, L, color_lookup; load_fun=load_dmr
 		idx = window_fun(L)
 		(Kfit, afit), Kerr ,  _ = fit_fluc_lin_xs_pbc_err(xs, Fs, L, idx)   
 		 
-		scatter!(p, xs[first_point:end],Fs[first_point:end]; marker=:circle, msw=1, ms=5, label=latexstring(f"\\ U={U:3.3f}"), nice_points(c)...)
+		scatter!(p, xs[first_point:end],Fs[first_point:end]; marker=marker, msw=1, ms=ms, label=latexstring(f"\\ U={U:3.3f}"), nice_points(c)...)
 		 
         plot!(p, xs[1:mask_err(xs)[1]], fluctuations_pbc_large_L_xs(xs[1:mask_err(xs)[1]], (Kfit, afit), (L,)),color=:black,linewidth=0.5,ls=:dash,label=nothing) 
         plot!(p, xs[mask_err(xs)[end]:end], fluctuations_pbc_large_L_xs(xs[mask_err(xs)[end]:end], (Kfit, afit), (L,)),color=:black,linewidth=0.5,ls=:dash,label=nothing) 
@@ -471,14 +471,15 @@ function plot_fig3_Fandfit_obc!(p_F, fit_window_obc, err_window_obc)
     local Us = [ 3.275 ]    
     local col_lookup = get_color_lookup(get_values_of_U(;path="../data/pbc/DMRG/")) 
     local cols = [col_lookup[U] for U in Us]
-    
+    Kfit = 0.0
+    Kerr = 0.0
     for (U, (i_c,c)) in zip(Us,enumerate(cols))   
         # OBC   
         local L = 460
         local ls, Fs = load_dmrg_obc(L,U);
         local xs = lin_factor_pbc(ls, L);  
         local idx = fit_window_obc(L)
-        local (Kfit, afit), Kerr ,  _ = fit_fluc_lin_xs_pbc_err(xs, Fs, L, idx, mask_err=err_window_obc(xs))   
+        (Kfit, afit), Kerr ,  _ = fit_fluc_lin_xs_pbc_err(xs, Fs, L, idx, mask_err=err_window_obc(xs))   
             
         scatter!(p_F, xs,Fs; marker=:circle, msw=2, ms=4, label=latexstring(f"\\ {U:3.3f}"), nice_points(c)...)
             
@@ -487,7 +488,7 @@ function plot_fig3_Fandfit_obc!(p_F, fit_window_obc, err_window_obc)
         plot!(p_F, xs[idx], fluctuations_pbc_large_L_xs(xs[idx], (Kfit, afit), (L,)),color=:black,label=nothing,linewidth=2)    
  
     end   
-    p_F 
+    p_F, Kfit, Kerr
 end
 
 function plot_fig2_Kobc!(p,  fit_window_obc, err_window_obc; legend=true)
