@@ -1,14 +1,14 @@
 [![Paper](https://img.shields.io/badge/paper-arXiv%3AXXXX.YYYYY-B31B1B.svg)](https://arxiv.org/abs/XXXX.YYYYY)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://zenodo.org/badge/latestdoi/XXXXYYYYY)
 
-# Direct Observation of the Berezinskii-Kosterlitz-Thouless Renormalization Group Flow at a Quantum Phase Transition
+# Berezinskii-Kosterlitz-Thouless Renormalization Group Flow at a Quantum Phase Transition
 
-Author 1, Author 2, Author 3
+Matthias Thamm, Harini Radhakrishnan, Hatem Barghathi, Chris Herdman, Arpan Biswas, Bernd Rosenow, and Adrian Del Maestro 
 
 [arXiv:XXXX.YYYYY](https://arxiv.org/abs/XXXX.YYYYY)
 
 ### Abstract
-Abstract Here
+We present a controlled numerical study of the Berezinskii-Kosterlitz-Thouless (BKT) transition in the one-dimensional Bose-Hubbard model at unit filling, providing evidence of the characteristic logarithmic finite-size scaling of the BKT transition. Employing density matrix renormalization group and quantum Monte Carlo simulations under periodic boundary conditions, together with a systematic finite-size scaling analysis of bipartite particle number fluctuations, we resolve boundary-induced complications that previously obscured critical scaling. We demonstrate that a suitably chosen central region under open boundaries reproduces universal RG signatures, reconciling earlier discrepancies. Finally, leveraging a non-parametric Bayesian analysis, we determine the critical interaction strength with high precision, establishing a benchmark for BKT physics in one-dimensional quantum models.
 
 ### Description
 This repository includes links, code, scripts, and data to generate the figures in a paper.
