@@ -20,6 +20,7 @@ The data in this project can be generated using the code in the following reposi
 2. QMC simulations: [pigsfli](https://github.com/DelMaestroGroup/pigsfli)
 
 Data is included in the [data](https://github.com/DelMaestroGroup/papers-code-BKTFlowBoseHubbard/tree/main/data) directory.
+QMC raw data is available via a Zenodo archive:  [![DOI](https://zenodo.org/badge/DOI/xx.xxxxx/zenodo.xxxxxxx.svg)](https://zenodo.org/record/xxxxxxx)
 
 This code requires Julia version 10.4 or higher and the IJulia package to run the Jupyter notebook. Required Julia packages can be installed by running the code in the `create_figures.jl` script:
 
@@ -29,11 +30,21 @@ Pkg.activate(".")
 Pkg.add(["Plots","PyFormattedStrings","NonlinearSolve","StaticArrays","Printf","Integrals","FastClosures","LaTeXStrings","DataFrames","NPZ","Measures","PyCall"])
 ```
 
-### Support
-The creation of these materials was supported in part by the {INSERT FUNDING AGENCY} under Award No. [{AWARD NUMBER}](https://www.nsf.gov/awardsearch/simpleSearchResult?queryText=delmaestro).
+The python code for postprocessing of the QMC data in `data/pbc/QMC/postprocess` requires the following packages:
+- matplotlib
+- numpy
+- tqdm
+- scipy
+- zipfile-deflat64
 
-<img width="400px" src="https://new.nsf.gov/themes/custom/nsf_theme/components/images/logo/logo-desktop.svg">
-<img width="400px" src="https://science.osti.gov/assets/img/doe-logos/logo.png">
+The python code for the BO and GP analysis of the $\zeta(K)$ data in `src/...` requires the following packages:
+- BoTorch
+-
+
+
+### Support
+This work was partially supported by the National Science Foundation Materials Research Science and Engineering Center program through the UT Knoxville Center for Advanced Materials and Manufacturing (DMR-2309083). H.R. acknowledges AITennessee for financial support. Computations were performed using resources provided by the Leipzig University Computing Center and University of Tennessee Infrastructure for Scientific Applications and Advanced Computing (ISAAC). 
+ 
 
 
 ### Figures
@@ -44,14 +55,21 @@ The creation of these materials was supported in part by the {INSERT FUNDING AGE
 #### Figure 02: Finite size scaling of Luttinger parameter according to BKT flow.
 <img src="https://github.com/DelMaestroGroup/papers-code-BKTFlowBoseHubbard/blob/main/figures/002_finite_size_scaling.svg" width="400px">
 
-#### Figure 03: Extracting Luttinger parameter from particle number fluctuations.
+#### Figure 03: Extracting Luttinger parameter from bipartite particle number fluctuations.
 <img src="https://github.com/DelMaestroGroup/papers-code-BKTFlowBoseHubbard/blob/main/figures/003_fit_K_to_fluctuations.svg" width="400px">
 
 #### Figure 04: Extracting critical point of BKT transition.
-<img src="https://github.com/DelMaestroGroup/papers-code-BKTFlowBoseHubbard/blob/main/figures/004_zeta_of_U.svg" width="400px">
+<img src="https://github.com/DelMaestroGroup/papers-code-BKTFlowBoseHubbard/blob/main/figures/final_zeta_var.svg" width="400px">
 
 #### Figure S01: Periodic vs. open boundary conditions.
 <img src="https://github.com/DelMaestroGroup/papers-code-BKTFlowBoseHubbard/blob/main/figures/S001_compare_pbc_obc.svg" width="400px">
+
+#### Figure S02: Fitting method for OBC.
+<img src="https://github.com/DelMaestroGroup/papers-code-BKTFlowBoseHubbard/blob/main/figures/S003_obc_fit_interval_data.svg" width="400px">
+
+#### Figure S03: Reproduction of literature result.
+<img src="https://github.com/DelMaestroGroup/papers-code-BKTFlowBoseHubbard/blob/main/figures/S002_comparison_obc_literature.svg" width="400px">
+
 
 These figures are relesed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) and can be freely copied, redistributed and remixed.
 

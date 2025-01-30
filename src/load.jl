@@ -106,10 +106,13 @@ function get_values_of_L_qmc(U::Float64;Lmin::Int=0, path::String="../data/pbc/Q
     files = [x for x in readdir(path) if isfile(joinpath(path,x))]
     Ls = Int[]
     for file in files 
-        L = parse(Int, split(file,"_")[3][2:end])
-        _U = parse(Float64, split(file,"_")[4][2:end-4])  
-        if abs(U-_U) < 1e-4 && !(L  in Ls) && L >= Lmin
-            push!(Ls,L)  
+        try
+            L = parse(Int, split(file,"_")[3][2:end])
+            _U = parse(Float64, split(file,"_")[4][2:end-4])  
+            if abs(U-_U) < 1e-4 && !(L  in Ls) && L >= Lmin
+                push!(Ls,L)  
+            end
+        catch
         end
     end
     sort!(Ls)
@@ -148,9 +151,12 @@ function get_values_of_U_qmc(;path::String="../data/pbc/QMC/")
     files = [x for x in readdir(path) if isfile(joinpath(path,x))] 
     Us = Float64[]
     for file in files   
-        U = parse(Float64, split(file,"_")[4][2:end-4])  
-        if !(U in Us)
-            push!(Us,U)     
+        try
+            U = parse(Float64, split(file,"_")[4][2:end-4])  
+            if !(U in Us)
+                push!(Us,U)     
+            end
+        catch 
         end
     end
     sort!(Us)
