@@ -78,7 +78,7 @@ xtick.major.width    : 0.5      # major tick width in points
 xtick.minor.size     : 2      # minor tick size in points
 xtick.major.pad      : 4      # distance to major tick label in points
 xtick.minor.pad      : 4      # distance to the minor tick label in points
-xtick.labelsize      : 8      # fontsize of the tick labels
+xtick.labelsize      : 10      # fontsize of the tick labels
 xtick.top : False
 xtick.direction: in
 
@@ -87,7 +87,7 @@ ytick.major.width    : 0.5      # major tick width in points
 ytick.minor.size     : 2      # minor tick size in points
 ytick.major.pad      : 4      # distance to major tick label in points
 ytick.minor.pad      : 4      # distance to the minor tick label in points
-ytick.labelsize      : 8      # fontsize of the tick labels
+ytick.labelsize      : 10      # fontsize of the tick labels
 ytick.right : False
 ytick.direction: in
 

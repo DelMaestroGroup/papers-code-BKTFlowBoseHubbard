@@ -75,6 +75,9 @@ This work was partially supported by the National Science Foundation Materials R
 #### Figure S03: Reproduction of literature result.
 <img src="https://github.com/DelMaestroGroup/papers-code-BKTFlowBoseHubbard/blob/main/figures/S002_comparison_obc_literature.svg" width="400px">
 
+#### Figure S04: GP mean combined with the confidence interval of the posterior distribution..
+<img src="https://github.com/DelMaestroGroup/papers-code-BKTFlowBoseHubbard/blob/main/figures/GP0_acquisition_wzoom.svg" width="400px">
+
 
 These figures are relesed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) and can be freely copied, redistributed and remixed.
 
