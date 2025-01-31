@@ -37,9 +37,14 @@ The python code for postprocessing of the QMC data in `data/pbc/QMC/postprocess`
 - scipy
 - zipfile-deflat64
 
-The python code for the BO and GP analysis of the $\zeta(K)$ data in `src/...` requires the following packages:
-- BoTorch
--
+The python code for the BO and GP analysis of the $\zeta(K)$ data in `src/GP_with_BoTorch.ipynb` requires the following packages:
+- botorch=0.10.0
+- torch
+- gpytorch
+- numpy
+- matplotlib
+- dgutils (`pip install git+https://github.com/DelMaestroGroup/dgutils.git#egg=dgutils`)
+- scipy
 
 
 ### Support
