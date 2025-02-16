@@ -20,7 +20,7 @@ The data in this project can be generated using the code in the following reposi
 2. QMC simulations: [pigsfli](https://github.com/DelMaestroGroup/pigsfli)
 
 Data is included in the [data](https://github.com/DelMaestroGroup/papers-code-BKTFlowBoseHubbard/tree/main/data) directory.
-QMC raw data is available via a Zenodo archive:  [![DOI](https://zenodo.org/badge/DOI/xx.xxxxx/zenodo.xxxxxxx.svg)](https://zenodo.org/record/xxxxxxx)
+QMC raw data is available via a Zenodo archive:  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14879281.svg)](https://zenodo.org/record/14879281)
 
 This code requires Julia version 10.4 or higher and the IJulia package to run the Jupyter notebook. Required Julia packages can be installed by running the code in the `create_figures.jl` script:
 
