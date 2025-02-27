@@ -6,7 +6,7 @@
 
 Matthias Thamm, Harini Radhakrishnan, Hatem Barghathi, Chris Herdman, Arpan Biswas, Bernd Rosenow, and Adrian Del Maestro 
 
-[arXiv:XXXX.YYYYY](https://arxiv.org/abs/XXXX.YYYYY)
+[arXiv:2502.18622](https://arxiv.org/abs/2502.18622)
 
 ### Abstract
 We present a controlled numerical study of the Berezinskii-Kosterlitz-Thouless (BKT) transition in the one-dimensional Bose-Hubbard model at unit filling, providing evidence of the characteristic logarithmic finite-size scaling of the BKT transition. Employing density matrix renormalization group and quantum Monte Carlo simulations under periodic boundary conditions, together with a systematic finite-size scaling analysis of bipartite particle number fluctuations, we resolve boundary-induced complications that previously obscured critical scaling. We demonstrate that a suitably chosen central region under open boundaries reproduces universal RG signatures, reconciling earlier discrepancies. Finally, leveraging a non-parametric Bayesian analysis, we determine the critical interaction strength with high precision, establishing a benchmark for BKT physics in one-dimensional quantum models.
