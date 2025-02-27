@@ -1,4 +1,4 @@
-[![Paper](https://img.shields.io/badge/paper-arXiv%3AXXXX.YYYYY-B31B1B.svg)](https://arxiv.org/abs/XXXX.YYYYY)
+[![Paper](https://img.shields.io/badge/paper-arXiv%3A2502.18622-B31B1B.svg)](https://arxiv.org/abs/2502.18622)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14879441.svg)](https://doi.org/10.5281/zenodo.14879441)
 
 
