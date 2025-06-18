@@ -1,0 +1,14 @@
+Year,Reference,Technique,Observable,Estimate,Error
+1991,Krauth,(approximate) Bethe Ansatz,,0.2887,0.0
+1992,Batrouni et al.,QMC,Superfluid stiffness,0.2100,0.0100
+1994,Elesin et al.,Exact Diagonalization,Gap,0.2750,0.0050
+1996,Kashurnikov et al.,QMC,Gap,0.3000,0.0050
+1999,Elstner et al.,Strong coupling,Gap,0.2600,0.0100
+2000,Kühner et al.,DMRG,Correlation function,0.2970,0.0100
+2008,Zakrzewski et al.,Time Evolving Block Decimation,Correlation function,0.29759,0.00005
+2008,Läuchli et al.,DMRG,von Neumann entropy,0.2980,0.0050
+2008,Roux et al.,DMRG,Gap,0.3030,0.0090
+2011,Ejima et al.,DMRG,Correlation function,0.3050,0.0010
+2011,Danshita et al.,Time Evolving Block Decimation,Excitation spectrum,0.3190,0.0010
+2012,Rachel et al.,DMRG,Bipartite Fluctuations,0.2989,0.0002
+2025,This Work, DMRG+QMC,Bipartite Fluctuations,0.3053,0.0002
