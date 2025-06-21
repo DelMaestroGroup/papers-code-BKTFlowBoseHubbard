@@ -77,7 +77,8 @@ function plot_dmrg_rg_flow!(p, color_lookup::Dict{Float64,String}, ms_lookup::Di
     return Us[idx], ζs[idx], ζserr[idx]
 end
 
-function add_arrow!(p,x,y,y0,color; debug_print=false) 
+function add_arrow!(p,x,y,y0_half,color; debug_print=false) 
+    y0 = 2y0_half
     is_nan = isnan.(y)
     x = x[.!is_nan]
     y = y[.!is_nan]
@@ -106,9 +107,9 @@ function add_arrow!(p,x,y,y0,color; debug_print=false)
     angle_deg = angle_rad * (180 / π)  
     debug_print && println(angle_deg)
     if angle_deg < 0
-        angle_deg += 15 
+        angle_deg += 0#15 
     else
-        angle_deg -= 10 
+        angle_deg -= -5 
     end
     # Plot the arrow
     annotate!(p,x_2,y_2, Plots.text("➤", 5, :vcenter, :left, color, rotation = angle_deg ))

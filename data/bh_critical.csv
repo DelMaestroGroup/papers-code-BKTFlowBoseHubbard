@@ -1,14 +1,31 @@
 Year,Reference,Technique,Observable,Estimate,Error
+1990,Batrouni et al.,QMC,Gap,0.215,0.01
 1991,Krauth,(approximate) Bethe Ansatz,,0.2887,0.0
 1992,Batrouni et al.,QMC,Superfluid stiffness,0.2100,0.0100
 1994,Elesin et al.,Exact Diagonalization,Gap,0.2750,0.0050
 1996,Kashurnikov et al.,QMC,Gap,0.3000,0.0050
+1996,Pai et al.,DMRG,Gap,0.298,0.002 
+1996,Kashurnikov et al.,Exact Diagonalization,Superfluid stiffness,0.304,0.002
+1998,Kühner et al.,DMRG,Correlation function,0.277,0.01
 1999,Elstner et al.,Strong coupling,Gap,0.2600,0.0100
+1999,Rapsch et al.,DMRG,Superfluid stiffness,0.260,0.005
 2000,Kühner et al.,DMRG,Correlation function,0.2970,0.0100
+2004,Park et al.,Exact Diagonalization,Superfluid stiffness,0.283,0.005
+2005,Pollet,QMC,Correlation function,0.305,0.004
+2007,Buonsante et al.,Exact Diagonalization,Ground state fidality,0.257,0.001
+2007,Capello et al.,Green function MC,Structure factor,0.238,0.011
 2008,Zakrzewski et al.,Time Evolving Block Decimation,Correlation function,0.29759,0.00005
 2008,Läuchli et al.,DMRG,von Neumann entropy,0.2980,0.0050
 2008,Roux et al.,DMRG,Gap,0.3030,0.0090
 2011,Ejima et al.,DMRG,Correlation function,0.3050,0.0010
 2011,Danshita et al.,Time Evolving Block Decimation,Excitation spectrum,0.3190,0.0010
+2011,Endres et al.,DMRG,String correlator,0.3075,0.013
 2012,Rachel et al.,DMRG,Bipartite Fluctuations,0.2989,0.0002
+2012,Gu et al.,(numerical) Bethe ansatz,Superfluid stiffness,0.2885,0.0001
+2012,Pino et al.,Time Evolving Block Decimation,Von Neumann entropy,0.30,0.01
+2012,Ejima et al.,DMRG,Von Neumann entropy,0.305,0.003
+2013,Carrasquilla et al.,DMRG,Gap,0.3050,0.0001 
+2014,Lacki et al.,Time Evolving Block Decimation,Fidelity susceptibility,0.289,0.008
+2015,Sowinski,Exact Diagonalization,Gap,0.286,0.005
+2018,Rams et al.,Corner transfer matrix+iMPS,Correlation function,0.3048,0.0003
 2025,This Work, DMRG+QMC,Bipartite Fluctuations,0.3053,0.0002

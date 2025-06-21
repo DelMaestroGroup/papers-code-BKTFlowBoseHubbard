@@ -114,7 +114,7 @@ end
 function get_flow_curve(ξ::Float64 ; dk::Float64=0.001)
     K_array = collect(4.0:-dk:0.0) 
     # v/Er on y-axis 
-    ys = sqrt(2)/π * sqrt.(0.0im .+ 2.0 ./ K_array .+  log.(K_array/2.0 .+ 0.0im) .-  ξ) 
+    ys = sqrt(8)/π * sqrt.(0.0im .+ 2.0 ./ K_array .+  log.(K_array/2.0 .+ 0.0im) .-  ξ) 
     return K_array, real.(ys)   
 end
  
